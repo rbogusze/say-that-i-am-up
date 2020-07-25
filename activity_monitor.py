@@ -1,9 +1,14 @@
 import psutil
+import git
 
 from time import sleep
-from datetime import datetime
+from datetime import datetime, time
 from json import dumps
 from kafka import KafkaProducer
+from random import randrange
+
+git_dir = "C:\_programy\say-that-i-am-up"
+g = git.cmd.Git(git_dir)
 
 def send_to_kafka(text):
     producer = KafkaProducer(bootstrap_servers=['192.168.1.167:9092'],
@@ -73,6 +78,24 @@ print("Hllo World")
 print("OMG this is cool")
 
 send_to_kafka("Hello there")
+
+time_start = datetime.now()
+do_git_pull = True
 while True:
     main()
-    sleep(10)
+    sleep(5)
+    time_now = datetime.now()
+    seconds_since_start = (time_now - time_start).seconds
+    print(f"Program is running for: {seconds_since_start} seconds.")
+
+    # execute this once at the start
+    if do_git_pull == True:
+        print("Running git pull")
+        g.pull()
+        do_git_pull = False
+
+    # randomly set the flag to run git pull
+    random_number = randrange(10)
+    print(f"Random number: {random_number}")
+    if random_number%5 == 0:
+        do_git_pull = True
