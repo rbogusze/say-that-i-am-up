@@ -67,7 +67,7 @@ def main():
     
     for elem in listOfRunningProcess[:5] :
         print(elem)
-        send_to_kafka(elem['name'])
+        send_to_kafka(str(elem['username']) + " " + str(elem['name']))
 
         
 
