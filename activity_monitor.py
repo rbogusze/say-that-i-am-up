@@ -1,5 +1,6 @@
 import psutil
 import git
+import socket
 
 from time import sleep
 from datetime import datetime, time
@@ -9,6 +10,8 @@ from random import randrange
 
 git_dir = "C:\_programy\say-that-i-am-up"
 g = git.cmd.Git(git_dir)
+
+hostname = socket.gethostname()
 
 def send_to_kafka(text):
     producer = KafkaProducer(bootstrap_servers=['192.168.1.167:9092'],
@@ -67,7 +70,8 @@ def main():
     
     for elem in listOfRunningProcess[:5] :
         print(elem)
-        send_to_kafka(str(elem['username']) + " " + str(elem['name']))
+        #send_to_kafka(str(elem['username']) + " " + str(elem['name']))
+        send_to_kafka(str(hostname) + " " + str(elem['name']))
 
         
 
@@ -77,7 +81,7 @@ def main():
 print("Hllo World")
 print("OMG this is cool")
 
-send_to_kafka("Hello there")
+send_to_kafka("Hello there from: " + hostname)
 
 time_start = datetime.now()
 do_git_pull = True
