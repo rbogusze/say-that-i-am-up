@@ -67,11 +67,17 @@ def main():
         pass
     print('*** Top 5 process with highest memory usage ***')
     listOfRunningProcess = getListOfProcessSortedByMemory()
-    
+
+    list_for_kafka = []
+    trash_processes = ["MsMpEng.exe"]
     for elem in listOfRunningProcess[:5] :
         print(elem)
-        #send_to_kafka(str(elem['username']) + " " + str(elem['name']))
-        send_to_kafka(str(hostname) + " " + str(elem['name']))
+        if str(elem['name']) not in trash_processes:
+            list_for_kafka.append(str(hostname) + " " + str(elem['name']))
+
+    list_for_kafka_unique = set(list_for_kafka)
+    for kafka_unique in list_for_kafka_unique:
+        send_to_kafka(kafka_unique)
 
         
 
@@ -99,7 +105,7 @@ while True:
         do_git_pull = False
 
     # randomly set the flag to run git pull
-    random_number = randrange(10)
+    random_number = randrange(20)
     print(f"Random number: {random_number}")
-    if random_number%5 == 0:
+    if random_number%19  == 0:
         do_git_pull = True
