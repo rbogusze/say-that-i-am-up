@@ -58,12 +58,12 @@ def main():
     # Iterate over all running processes
     for proc in psutil.process_iter():
        # Get process detail as dictionary
-       pInfoDict = proc.as_dict(attrs=['pid', 'name', 'cpu_percent'])
+       pInfoDict = proc.as_dict(attrs=['pid', 'name', 'cpu_percent', 'cmdline'])
        # Append dict of process detail in list
        listOfProcessNames.append(pInfoDict)
     # Iterate over the list of dictionary and print each elem
     for elem in listOfProcessNames:
-        #print(elem)
+        print(elem)
         pass
     print('*** Top 5 process with highest memory usage ***')
     listOfRunningProcess = getListOfProcessSortedByMemory()
@@ -93,7 +93,7 @@ time_start = datetime.now()
 do_git_pull = True
 while True:
     main()
-    sleep(5)
+    sleep(30)
     time_now = datetime.now()
     seconds_since_start = (time_now - time_start).seconds
     print(f"Program is running for: {seconds_since_start} seconds.")
