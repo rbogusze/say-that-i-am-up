@@ -98,7 +98,7 @@ def main():
 
     list_for_kafka = []
     list_for_segment = []
-    trash_processes = ["MsMpEng.exe"]
+    trash_processes = ["MsMpEng.exe","SearchUI.exe","Skype.exe"]
     for elem in listOfRunningProcess[:5] :
         print(elem)
         if str(elem['name']) not in trash_processes:
