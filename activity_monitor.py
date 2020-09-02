@@ -1,6 +1,9 @@
 import psutil
 import git
 import socket
+import analytics
+import sys
+import csv
 
 from time import sleep
 from datetime import datetime, time
@@ -13,6 +16,22 @@ g = git.cmd.Git(git_dir)
 
 hostname = socket.gethostname()
 
+# get Segemnt writekey from the file
+token_file = "C:\_programy\segment_token.txt"
+
+try:
+    f = open(token_file, 'r')
+except OSError:
+    print("Could not open/read file:", token_file)
+    sys.exit()
+with f:
+    reader = csv.reader(f)
+    for read in reader:
+        segment_write_key = ''.join(read)
+    
+print(f"segment_write_key: {segment_write_key}")
+analytics.write_key = segment_write_key
+
 def send_to_kafka(text):
     producer = KafkaProducer(bootstrap_servers=['192.168.1.167:9092'],
                              value_serializer=lambda x:
@@ -21,6 +40,14 @@ def send_to_kafka(text):
     send_to_kafka = {'send_time' : datetime.now().replace(microsecond=0).isoformat(), 'text' : str(text)}
     producer.send('activity_monitor', value=send_to_kafka)
 
+
+def send_to_segment(content):
+
+    send_this = {}
+    send_this['name'] = hostname
+    send_this['created_at'] = datetime.now()
+    send_this['process'] = content
+    analytics.track(str(hostname), 'active', send_this)
 
 
 # from https://thispointer.com/python-get-list-of-all-running-processes-and-sort-by-highest-memory-usage/    
@@ -58,26 +85,36 @@ def main():
     # Iterate over all running processes
     for proc in psutil.process_iter():
        # Get process detail as dictionary
+       #pInfoDict = proc.as_dict(attrs=['pid', 'name', 'cpu_percent', 'cmdline'])
        pInfoDict = proc.as_dict(attrs=['pid', 'name', 'cpu_percent', 'cmdline'])
        # Append dict of process detail in list
        listOfProcessNames.append(pInfoDict)
     # Iterate over the list of dictionary and print each elem
     for elem in listOfProcessNames:
-        print(elem)
+        #print(elem)
         pass
     print('*** Top 5 process with highest memory usage ***')
     listOfRunningProcess = getListOfProcessSortedByMemory()
 
     list_for_kafka = []
+    list_for_segment = []
     trash_processes = ["MsMpEng.exe"]
     for elem in listOfRunningProcess[:5] :
         print(elem)
         if str(elem['name']) not in trash_processes:
             list_for_kafka.append(str(hostname) + " " + str(elem['name']))
+            list_for_segment.append(str(elem['name']))
 
     list_for_kafka_unique = set(list_for_kafka)
+    list_for_segment_unique = set(list_for_segment)
     for kafka_unique in list_for_kafka_unique:
+        print(kafka_unique)
         send_to_kafka(kafka_unique)
+
+
+    for segment_unique in list_for_segment_unique:
+        print(f"To segment: {segment_unique}")
+        send_to_segment(segment_unique)
 
         
 
@@ -93,7 +130,7 @@ time_start = datetime.now()
 do_git_pull = True
 while True:
     main()
-    sleep(30)
+    sleep(10)
     time_now = datetime.now()
     seconds_since_start = (time_now - time_start).seconds
     print(f"Program is running for: {seconds_since_start} seconds.")
