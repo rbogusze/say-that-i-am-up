@@ -98,7 +98,7 @@ def main():
 
     list_for_kafka = []
     list_for_segment = []
-    trash_processes = ["MsMpEng.exe","SearchUI.exe","Skype.exe"]
+    trash_processes = ["MsMpEng.exe","SearchUI.exe","Skype.exe","svchost.exe"]
     for elem in listOfRunningProcess[:5] :
         print(elem)
         if str(elem['name']) not in trash_processes:
@@ -130,7 +130,7 @@ time_start = datetime.now()
 do_git_pull = True
 while True:
     main()
-    sleep(10)
+    sleep(60)
     time_now = datetime.now()
     seconds_since_start = (time_now - time_start).seconds
     print(f"Program is running for: {seconds_since_start} seconds.")
