@@ -112,14 +112,13 @@ def main():
         send_to_kafka(kafka_unique)
 
 
-    for segment_unique in list_for_segment_unique:
-        print(f"To segment: {segment_unique}")
-        send_to_segment(segment_unique)
+    #for segment_unique in list_for_segment_unique:
+    #    print(f"To segment: {segment_unique}")
+    #    send_to_segment(segment_unique)
+    # just send top program running, so I can use it easily to measure time online
+    print("To segment: {}".format(list_for_segment[0]))
+    send_to_segment(list_for_segment[0])
 
-        
-
-
-    
 
 print("Hllo World")
 print("OMG this is cool")
