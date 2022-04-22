@@ -11,13 +11,30 @@ from json import dumps
 from kafka import KafkaProducer
 from random import randrange
 
-git_dir = "C:\_programy\say-that-i-am-up"
+print(sys.platform)
+
+if sys.platform == "linux" or platform == "linux2":
+    # linux
+    git_dir = "/opt/say-that-i-am-up"
+    token_file = "/opt/segment_token.txt"
+elif sys.platform == "darwin":
+    # OS X
+    print("Not implemented. Exiting")
+    sys.exit()
+elif sys.platform == "win32":
+    # Windows...
+    git_dir = "C:\_programy\say-that-i-am-up"
+    token_file = "C:\_programy\segment_token.txt"
+else:
+    print(sys.platform)
+    print("Unknown platform. Exiting")
+    sys.exit()
+
 g = git.cmd.Git(git_dir)
 
 hostname = socket.gethostname()
 
 # get Segemnt writekey from the file
-token_file = "C:\_programy\segment_token.txt"
 
 try:
     f = open(token_file, 'r')
@@ -33,7 +50,7 @@ print(f"segment_write_key: {segment_write_key}")
 analytics.write_key = segment_write_key
 
 def send_to_kafka(text):
-    producer = KafkaProducer(bootstrap_servers=['192.168.1.167:9092'],
+    producer = KafkaProducer(bootstrap_servers=['192.168.1.104:9092'],
                              value_serializer=lambda x:
                              dumps(x).encode('utf-8'))
     
