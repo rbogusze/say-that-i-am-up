@@ -50,12 +50,29 @@ print(f"segment_write_key: {segment_write_key}")
 analytics.write_key = segment_write_key
 
 def send_to_kafka(text):
-    producer = KafkaProducer(bootstrap_servers=['192.168.1.104:9092'],
+    try:
+        producer = KafkaProducer(bootstrap_servers=['192.168.1.104:9092'],
                              value_serializer=lambda x:
                              dumps(x).encode('utf-8'))
+    except:
+        print("[error] Unable to establish connection with kafka")
+        print("[error] just moving on and skipping sending to kafka")
+        return 1
     
-    send_to_kafka = {'send_time' : datetime.now().replace(microsecond=0).isoformat(), 'text' : str(text)}
-    producer.send('activity_monitor', value=send_to_kafka)
+    payload = {'send_time' : datetime.now().replace(microsecond=0).isoformat(), 'text' : str(text)}
+
+    # send to predefined topic name
+    #future = producer.send('activity_monitor', value=payload)
+    # create topic based on hostname, that means brokers needs to have topic autocreation enabled
+    future = producer.send('activity_'+hostname, value=payload)
+
+    # Block for 'synchronous' sends
+    try:
+        record_metadata = future.get(timeout=10)
+    except KafkaError:
+        # Decide what to do if produce request failed...
+        print(exception())
+        pass
 
 
 def send_to_segment(content):
@@ -125,7 +142,7 @@ def main():
     list_for_kafka_unique = set(list_for_kafka)
     list_for_segment_unique = set(list_for_segment)
     for kafka_unique in list_for_kafka_unique:
-        print(kafka_unique)
+        print("To kafka: {}".format(kafka_unique))
         send_to_kafka(kafka_unique)
 
 
