@@ -11,6 +11,7 @@ from json import dumps
 from kafka import KafkaProducer
 from random import randrange
 
+# check https://github.com/rbogusze/say-that-i-am-up
 print(sys.platform)
 
 if sys.platform == "linux" or platform == "linux2":
