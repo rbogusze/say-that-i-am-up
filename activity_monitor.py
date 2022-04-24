@@ -15,7 +15,7 @@ from random import randrange
 #
 print(sys.platform)
 
-if sys.platform == "linux" or platform == "linux2":
+if sys.platform == "linux" or sys.platform == "linux2":
     # linux
     git_dir = "/opt/say-that-i-am-up"
     token_file = "/opt/segment_token.txt"
