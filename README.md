@@ -11,11 +11,14 @@ https://git-scm.com/download/win
 
 
 PowerShell
+```
 pip install kafka-python
 pip install psutil
 pip install gitpython
+```
 
 PowerShell
+```
 $ cd c:\_programy
 $ git clone https://github.com/rbogusze/say-that-i-am-up.git
-
+```
