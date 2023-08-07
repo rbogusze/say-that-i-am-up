@@ -15,6 +15,7 @@ PowerShell
 pip install kafka-python
 pip install psutil
 pip install gitpython
+pip install analytics-python
 ```
 
 PowerShell
