@@ -138,7 +138,7 @@ def main():
     for elem in listOfRunningProcess[:5] :
         print(elem)
         if str(elem['name']) not in trash_processes:
-            list_for_kafka.append(str(hostname) + " " + str(elem['name']))
+            list_for_kafka.append(str(datetime.now()) + " " + str(hostname) + " " + str(elem['name']))
             list_for_segment.append(str(elem['name']))
 
     list_for_kafka_unique = set(list_for_kafka)
@@ -168,7 +168,7 @@ while True:
     sleep(60)
     time_now = datetime.now()
     seconds_since_start = (time_now - time_start).seconds
-    print(f"Program is running for: {seconds_since_start} seconds.")
+    print(f"Now it is {time_now} Program is running for: {seconds_since_start} seconds.")
 
     # execute this once at the start
     if do_git_pull == True:
